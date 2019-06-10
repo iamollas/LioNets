@@ -1,10 +1,19 @@
-from lionets.LioNexplainers import LioNexplainer
+from LioNexplainers import LioNexplainer
 from sklearn.linear_model import Ridge
 import matplotlib.pyplot as plt
 import seaborn as sns
 
 class LioNet:
+    """Class for interpreting an instance"""
     def __init__(self, model=None, autoencoder=None, decoder=None, encoder=None, feature_names=None):
+        """Init function
+        Args:
+            model: The trained predictor model
+            autoencoder: The trained autoencoder
+            decoder: The second half of the autoencoder
+            encoder: The first half of the autoencoder
+            feature_names: The selected features. The above networks have been trained with these.
+        """
         self.model = model
         self.autoencoder = autoencoder
         self.decoder = decoder
@@ -13,7 +22,12 @@ class LioNet:
         self.generated_neighbourhood = []
         self.accuracy = 0
 
-    def explain_instance(self, new_instance):
+    def explain_instance(self, new_instance, normal_distribution=True):
+        """Generates the explanation for an instance
+        Args:
+            new_instance: The instance to explain
+            normal_distribution: Sets the distribution of the neighbourhood to be normal (In progress!)
+        """
         self.instance = new_instance
         encoded_instance = self.encoder.predict(list(self.instance))
         neighbourhood = self.neighbourhood_generation(encoded_instance)
@@ -21,6 +35,8 @@ class LioNet:
         print(self.model.predict(encoded_instance))
         print("The predictor classified:",self.model.predict(encoded_instance)[0])
         self.neighbourhood_targets = self.model.predict(self.encoder.predict(self.final_neighbourhood))
+        if normal_distribution:
+            self.neighbourhood_to_normal_distribution()
         explainer = LioNexplainer(Ridge(), self.instance, self.final_neighbourhood, self.neighbourhood_targets, self.feature_names)
         explainer.fit_explanator()
         explainer.print_fidelity()
@@ -28,6 +44,7 @@ class LioNet:
         return True
 
     def neighbourhood_generation(self, encoded_instance):
+
         instance = encoded_instance[0]
         instance_length = len(instance)
         local_neighbourhood = []
@@ -49,23 +66,23 @@ class LioNet:
             else:
                 gen5[i] = gen5[i]
             #local_neighbourhood.append(list(gen1))
-            #local_neighbourhood.append(list(gen2))
+            local_neighbourhood.append(list(gen2))
             local_neighbourhood.append(list(gen3))
             local_neighbourhood.append(list(gen4))
             #local_neighbourhood.append(list(gen5))
         local_neighbourhood.append(instance)
         return local_neighbourhood
 
-    def print_neighbourhood_labels_distribution(self):
-        # matplotlib histogram
-        plt.hist(self.neighbourhood_targets, color='blue', edgecolor='black',
-                 bins=int(180 / 5))
+    #In Progress
+    def neighbourhood_to_normal_distribution(self):
+        old_neighbourhood = self.final_neighbourhood
+        old_targets = self.neighbourhood_targets.copy()
+        #...
 
-        # seaborn histogram
-        sns.distplot(self.neighbourhood_targets, hist=True, kde=False,
-                     bins=int(180 / 5), color='blue',
-                     hist_kws={'edgecolor': 'black'})
-        # Add labels
+    def print_neighbourhood_labels_distribution(self):
+        plt.hist(self.neighbourhood_targets, color='blue', edgecolor='black', bins=int(180 / 5))
+        sns.distplot(self.neighbourhood_targets, hist=True, kde=False, bins=int(180 / 5), color='blue', hist_kws={'edgecolor': 'black'})
+
         plt.title('Histogram of neighbourhood probabilities')
         plt.ylabel('Neighbours')
         plt.xlabel('Prediction Probabilities')

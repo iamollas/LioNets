@@ -1,4 +1,8 @@
 # LioNets 
-LioNets (Local Interpretable Neural nEtworks Through Self-autoencoder) 
+LioNets (Local Interpretations Of Neural nEtworks Through Self-autoencoder) 
 
-Building interpretable neural networks
+Building interpretable neural networks!
+
+
+![LioNets Architecture](lionetsArchitecture.png)
+

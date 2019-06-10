@@ -41,7 +41,7 @@ class Load_Dataset:
     def pre_processing2(pX):
         clean_tweet_texts = []
         for t in pX:
-            clean_tweet_texts.append((Load_Dataset.my_clean(Load_Dataset.clean(t), False, True, 2)))  # You can add one more clean()
+            clean_tweet_texts.append((Load_Dataset.my_clean(t, False, True, 2)))  # You can add one more clean()
         return clean_tweet_texts
 
     def clean(text):
@@ -62,16 +62,16 @@ class Load_Dataset:
         souped = re.sub(pat3, '', souped)  # remove "#" symbol and keeps the words
         clean = re.sub(pat6, '', souped)  # remove non-ascii characters
         lower_case = clean.lower()  # convert to lowercase
-        words = tok.tokenize(lower_case)
-        return (" ".join(words)).strip()
+        return (" ".join(lower_case)).strip()
     def my_clean(text,stops = False,stemming = False,minLength = 2):
         text = str(text)
+        text = re.sub(r" US ", " u s ", text)
         text = text.lower().split()
-        text = [w for w in text if len(w) >= minLength]
+        #text = [w for w in text if len(w) >= minLength]
         if stemming and stops:
             text = [word for word in text if word not in stopwords.words('english')]
             wordnet_lemmatizer = WordNetLemmatizer()
-            englishStemmer = SnowballStemmer("english", ignore_stopwords=True)
+            englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
             #text = [lancaster.stem(word) for word in text]
@@ -80,7 +80,7 @@ class Load_Dataset:
             text = [word for word in text if word not in stopwords.words('english')]
         elif stemming:
             wordnet_lemmatizer = WordNetLemmatizer()
-            englishStemmer = SnowballStemmer("english", ignore_stopwords=True)
+            englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
         text = " ".join(text)
@@ -101,15 +101,16 @@ class Load_Dataset:
         text = re.sub(r"\'re", " are ", text)
         text = re.sub(r"\'d", " would ", text)
         text = re.sub(r"\'ll", " will ", text)
+        text = re.sub(r" e - mail ", " email ", text)
         text = re.sub(r"[^A-Za-z0-9^,!.\/'+-=]", " ", text)
         text = re.sub(r",", " ", text)
         text = re.sub(r"\.", " ", text)
-        text = re.sub(r"!", " ! ", text)
+        text = re.sub(r"!", " ", text)
         text = re.sub(r"\/", " ", text)
-        text = re.sub(r"\^", " ^ ", text)
-        text = re.sub(r"\+", " + ", text)
-        text = re.sub(r"\-", " - ", text)
-        text = re.sub(r"\=", " = ", text)
+        text = re.sub(r"\^", " ", text)
+        text = re.sub(r"\+", " ", text)
+        text = re.sub(r"\-", " ", text)
+        text = re.sub(r"\=", " ", text)
         text = re.sub(r"'", " ", text)
         text = re.sub(r"(\d+)(k)", r"\g<1>000", text)
         text = re.sub(r":", " : ", text)
@@ -118,15 +119,14 @@ class Load_Dataset:
         text = re.sub(r" u s ", " american ", text)
         text = re.sub(r"\0s", "0", text)
         text = re.sub(r" 9 11 ", "911", text)
-        text = re.sub(r"e - mail", "email", text)
-        text = re.sub(r"j k", "jk", text)
+        text = re.sub(r" j k ", " jk ", text)
         text = re.sub(r"\s{2,}", " ", text)
         text = text.lower().split()
         text = [w for w in text if len(w) >= minLength]
         if stemming and stops:
             text = [word for word in text if word not in stopwords.words('english')]
             wordnet_lemmatizer = WordNetLemmatizer()
-            englishStemmer = SnowballStemmer("english", ignore_stopwords=True)
+            englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
             # text = [lancaster.stem(word) for word in text]
@@ -135,7 +135,7 @@ class Load_Dataset:
             text = [word for word in text if word not in stopwords.words('english')]
         elif stemming:
             wordnet_lemmatizer = WordNetLemmatizer()
-            englishStemmer = SnowballStemmer("english", ignore_stopwords=True)
+            englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
         text = " ".join(text)
