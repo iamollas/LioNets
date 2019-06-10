@@ -8,7 +8,6 @@ from nltk.stem import WordNetLemmatizer
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-
 class Load_Dataset:
 
     def load_hate_speech(preprocessed=True):

@@ -44,7 +44,10 @@ class LioNet:
         return True
 
     def neighbourhood_generation(self, encoded_instance):
-
+        """Generates the neighbourhood of an instance
+        Args:
+            encoded_instance: The instance to generate neighbours
+        """
         instance = encoded_instance[0]
         instance_length = len(instance)
         local_neighbourhood = []
@@ -75,11 +78,15 @@ class LioNet:
 
     #In Progress
     def neighbourhood_to_normal_distribution(self):
+        """Transforms the distribution of the neighbourhood to normal
+        """
         old_neighbourhood = self.final_neighbourhood
         old_targets = self.neighbourhood_targets.copy()
         #...
 
     def print_neighbourhood_labels_distribution(self):
+        """Presenting in a plot the distribution of the neighbourhood data
+        """
         plt.hist(self.neighbourhood_targets, color='blue', edgecolor='black', bins=int(180 / 5))
         sns.distplot(self.neighbourhood_targets, hist=True, kde=False, bins=int(180 / 5), color='blue', hist_kws={'edgecolor': 'black'})
 
