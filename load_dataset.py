@@ -9,10 +9,18 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 class Load_Dataset:
-
+    """Class for loading preprocessed datasets"""
     def load_hate_speech(preprocessed=True):
+        """load_hate_speech function returns the hate speech dataset
+        Args:
+            preprocessed: If true it returns the dataset preprocessed.
+        Return:
+            X: Data Instances
+            y: Targets
+            class_names: ['noHateSpeech','HateSpeech']
+        """
         missing_values = ["?"]
-        df = pd.read_csv("/Users/johnmollas/Desktop/MScProjects/Datasets/data.csv",na_values = missing_values,delimiter='\t')
+        df = pd.read_csv("datasets/hatespeech.csv",na_values = missing_values,delimiter='\t')
         X = df['comment'].values
         y = df['isHate'].values
         if preprocessed:
@@ -21,14 +29,22 @@ class Load_Dataset:
         return X,y,class_names
 
     def load_smsspam(preprocessed=True):
-        df = pd.read_csv('/Users/johnmollas/Desktop/MScProjects/Datasets/spam.csv', encoding='latin-')
+        """load_hate_speech function returns the smsspam dataset
+        Args:
+            preprocessed: If true it returns the dataset preprocessed.
+        Return:
+            X: Data Instances
+            y: Targets
+            class_names: ['spam', 'ham']
+        """
+        df = pd.read_csv('datasets/hatespeech.csv', encoding='latin-')
         X = df['v2'].values
         y = df['v1'].values
         le = LabelEncoder()
         y = le.fit_transform(y)
         class_names = ['spam', 'ham']
         if preprocessed:
-            X = Load_Dataset.pre_processing2(X)
+            X = Load_Dataset.pre_processing(X)
         return X,y,class_names
 
     def pre_processing(pX):
@@ -37,31 +53,6 @@ class Load_Dataset:
             clean_tweet_texts.append((Load_Dataset.my_clean(t, False, True, 2)))  # You can add one more clean()
         return clean_tweet_texts
 
-    def pre_processing2(pX):
-        clean_tweet_texts = []
-        for t in pX:
-            clean_tweet_texts.append((Load_Dataset.my_clean(t, False, True, 2)))  # You can add one more clean()
-        return clean_tweet_texts
-
-    def clean(text):
-        tok = WordPunctTokenizer()
-        pat1 = '@[\w\-]+'  # for @
-        pat2 = ('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|'
-                '[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')  # for url
-        pat3 = '#[\w\-]+'  # for hashtag
-        pat4 = 'ï»¿'
-        pat5 = '[' + string.punctuation + ']'  # for punctuation
-        pat6 = '[^\x00-\x7f]'
-        soup = BeautifulSoup(text, 'html.parser')  # html decoding ("@amp")
-        souped = soup.get_text()
-        souped = re.sub(pat1, '', souped)  # remove @
-        souped = re.sub(pat2, '', souped)  # remove url
-        souped = re.sub(pat4, '', souped)  # remove strange symbols
-        souped = re.sub(pat5, '', souped)  # remove punctuation
-        souped = re.sub(pat3, '', souped)  # remove "#" symbol and keeps the words
-        clean = re.sub(pat6, '', souped)  # remove non-ascii characters
-        lower_case = clean.lower()  # convert to lowercase
-        return (" ".join(lower_case)).strip()
     def my_clean(text,stops = False,stemming = False,minLength = 2):
         text = str(text)
         text = re.sub(r" US ", " u s ", text)
