@@ -2,6 +2,8 @@ from LioNexplainers import LioNexplainer
 from sklearn.linear_model import Ridge
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 class LioNet:
     """Class for interpreting an instance"""
@@ -31,10 +33,10 @@ class LioNet:
         self.instance = new_instance
         encoded_instance = self.encoder.predict(list(self.instance))
         neighbourhood = self.neighbourhood_generation(encoded_instance)
-        self.final_neighbourhood = self.decoder.predict([neighbourhood])
-        print(self.model.predict(encoded_instance))
-        print("The predictor classified:",self.model.predict(encoded_instance)[0])
-        self.neighbourhood_targets = self.model.predict(self.encoder.predict(self.final_neighbourhood))
+        import numpy as np
+        self.final_neighbourhood = self.decoder.predict(np.array(neighbourhood))
+        print("The predictor classified:",self.model.predict(self.instance)[0])
+        self.neighbourhood_targets = self.model.predict(self.final_neighbourhood)
         if normal_distribution:
             self.neighbourhood_to_normal_distribution()
         explainer = LioNexplainer(Ridge(), self.instance, self.final_neighbourhood, self.neighbourhood_targets, self.feature_names)
@@ -47,18 +49,25 @@ class LioNet:
         """Generates the neighbourhood of an instance
         Args:
             encoded_instance: The instance to generate neighbours
+        Return:
+            local_neighbourhood: The generated neighbours
         """
-        instance = encoded_instance[0]
+        instance = []
+        for i in range(0, len(encoded_instance[0])):
+            instance.append(encoded_instance[0][i])
         instance_length = len(instance)
         local_neighbourhood = []
+        non_zero_indexes = []
         for i in range(0, instance_length):
+            if instance[i] > 0.7:
+                non_zero_indexes.append(i)
             gen1 = [0] * instance_length
             gen1[i] = instance[i]  # Only one feature
             gen2 = instance.copy() # Removing low valued features and increasing high value
             if gen2[i] < 0.2:
                 gen2[i] = 0
             elif gen2[i] > 0.2:
-                gen2[i] = gen2[i] * 5
+                gen2[i] = gen2[i] * 2
             gen3 = instance.copy()  # Enhancing one feature
             gen3[i] = gen3[i] * 10
             gen4 = instance.copy()  # Removing one feature
@@ -68,12 +77,35 @@ class LioNet:
                 gen5[i] = gen5[i] * 2
             else:
                 gen5[i] = gen5[i]
+            gen6 = instance.copy()  # Enhancing low valued features a bit
+            gen7 = instance.copy()  # Enhancing low valued features a bit
+            if(i>1 and i<instance_length-1):
+                gen6[i]=0.1
+                gen6[i+1]=0
+                gen6[i-1]=0
+                gen7[i] = gen7[i] + 0.1
+                gen7[i + 1] = 0 + 0.05
+                gen7[i - 1] = 0 + 0.05
+            gen8 = instance.copy()  # Removing one feature
+            gen8[i] = gen8[i]/2
             #local_neighbourhood.append(list(gen1))
-            local_neighbourhood.append(list(gen2))
+            #local_neighbourhood.append(list(gen2))
             local_neighbourhood.append(list(gen3))
             local_neighbourhood.append(list(gen4))
             #local_neighbourhood.append(list(gen5))
+            local_neighbourhood.append(list(gen6))
+            local_neighbourhood.append(list(gen7))
+            local_neighbourhood.append(list(gen8))
         local_neighbourhood.append(instance)
+        if(len(non_zero_indexes)>3):
+            for i in non_zero_indexes:
+                other = non_zero_indexes.copy()
+                other.remove(i)
+                for j in other:
+                    dg = instance.copy()
+                    dg[i]=0
+                    dg[j]=0
+                    local_neighbourhood.append(dg)
         return local_neighbourhood
 
     #In Progress

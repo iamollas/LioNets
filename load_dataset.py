@@ -37,12 +37,12 @@ class Load_Dataset:
             y: Targets
             class_names: ['spam', 'ham']
         """
-        df = pd.read_csv('datasets/hatespeech.csv', encoding='latin-')
+        df = pd.read_csv('datasets/spam.csv', encoding='latin-')
         X = df['v2'].values
         y = df['v1'].values
         le = LabelEncoder()
         y = le.fit_transform(y)
-        class_names = ['spam', 'ham']
+        class_names = ['ham', 'spam']
         if preprocessed:
             X = Load_Dataset.pre_processing(X)
         return X,y,class_names
@@ -80,7 +80,7 @@ class Load_Dataset:
         text = re.sub(r"isn't", "is not ", text)
         text = re.sub(r"%", " percent ", text)
         text = re.sub(r"that's", "that is ", text)
-        text = re.sub(r"doesn't", "dos not ", text)
+        text = re.sub(r"doesn't", "does not ", text)
         text = re.sub(r"he's", "he is ", text)
         text = re.sub(r"she's", "she is ", text)
         text = re.sub(r"it's", "it is ", text)
@@ -96,6 +96,7 @@ class Load_Dataset:
         text = re.sub(r",", " ", text)
         text = re.sub(r"\.", " ", text)
         text = re.sub(r"!", " ", text)
+        text = re.sub(r";", " ", text)
         text = re.sub(r"\/", " ", text)
         text = re.sub(r"\^", " ", text)
         text = re.sub(r"\+", " ", text)
@@ -111,6 +112,7 @@ class Load_Dataset:
         text = re.sub(r" 9 11 ", "911", text)
         text = re.sub(r" j k ", " jk ", text)
         text = re.sub(r"\s{2,}", " ", text)
+        text = re.sub("^\d+\s|\s\d+\s|\s\d+$", " ", text) #Removes every number
         text = text.lower().split()
         text = [w for w in text if len(w) >= minLength]
         if stemming and stops:

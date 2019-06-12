@@ -3,6 +3,8 @@ import pandas as pd
 import seaborn as sns
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
 from sklearn.linear_model import Ridge
+from sklearn.metrics.pairwise import cosine_similarity
+
 
 class LioNexplainer:
     """Class for interpreting an instance"""
@@ -28,7 +30,10 @@ class LioNexplainer:
     def fit_explanator(self):
         """fit_explanator function trains the transparent regression model with the neighbourhood data
         """
-        self.explanator.fit(self.train_data, self.target_data)
+        distances = []
+        for i in self.train_data:
+            distances.append(cosine_similarity([self.instance.A[0]],[i])[0][0]*1000)
+        self.explanator.fit(self.train_data, self.target_data ,sample_weight=distances)
         y_pred = self.explanator.predict(self.train_data)
         self.accuracy_r2 = r2_score(self.target_data, y_pred)
         self.accuracy_mse = mean_squared_error(self.target_data, y_pred)
