@@ -59,7 +59,7 @@ class LioNet:
         local_neighbourhood = []
         non_zero_indexes = []
         for i in range(0, instance_length):
-            if instance[i] > 0.7:
+            if instance[i] > 0:
                 non_zero_indexes.append(i)
             gen1 = [0] * instance_length
             gen1[i] = instance[i]  # Only one feature
@@ -90,22 +90,32 @@ class LioNet:
             gen8[i] = gen8[i]/2
             #local_neighbourhood.append(list(gen1))
             #local_neighbourhood.append(list(gen2))
-            local_neighbourhood.append(list(gen3))
+            #local_neighbourhood.append(list(gen3))
             local_neighbourhood.append(list(gen4))
             #local_neighbourhood.append(list(gen5))
-            local_neighbourhood.append(list(gen6))
-            local_neighbourhood.append(list(gen7))
+            #local_neighbourhood.append(list(gen6))
+            #local_neighbourhood.append(list(gen7))
             local_neighbourhood.append(list(gen8))
+            #if instance[i] > 0.5:
+                #local_neighbourhood.append(list(gen2))
+                #local_neighbourhood.append(list(gen5))
+                #local_neighbourhood.append(list(gen6))
+                #local_neighbourhood.append(list(gen7))
         local_neighbourhood.append(instance)
-        if(len(non_zero_indexes)>3):
-            for i in non_zero_indexes:
-                other = non_zero_indexes.copy()
-                other.remove(i)
-                for j in other:
-                    dg = instance.copy()
-                    dg[i]=0
-                    dg[j]=0
-                    local_neighbourhood.append(dg)
+        print(non_zero_indexes)
+        #if(len(non_zero_indexes)>3):
+        #    for i in non_zero_indexes:
+        #        other = non_zero_indexes.copy()
+        #        other.remove(i)
+        #        for j in other:
+        #            dg = instance.copy()
+        #            dg[i]=0
+        #            dg[j]=0
+                    #local_neighbourhood.append(dg)
+        print("Number of generated neighbhours:",len(local_neighbourhood))
+        temp = list(set(tuple(i) for i in local_neighbourhood))
+        local_neighbourhood = list(list(i) for i in temp)
+        print("Final number of generated neighbhours:",len(local_neighbourhood))
         return local_neighbourhood
 
     #In Progress
