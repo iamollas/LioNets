@@ -103,11 +103,6 @@ class LioNet:
             local_neighbourhood.append(list(gen8))
             local_neighbourhood.append(list(gen9))
             local_neighbourhood.append(list(gen10))
-            #if instance[i] > 0.5:
-                #local_neighbourhood.append(list(gen2))
-                #local_neighbourhood.append(list(gen5))
-                #local_neighbourhood.append(list(gen6))
-                #local_neighbourhood.append(list(gen7))
         local_neighbourhood.append(instance)
         local_neighbourhood.append(instance)
         local_neighbourhood.append(instance)
@@ -123,10 +118,6 @@ class LioNet:
         #            dg[i]=0
         #            dg[j]=0
                     #local_neighbourhood.append(dg)
-        #print("Number of generated neighbhours:",len(local_neighbourhood))
-        #temp = list(set(tuple(i) for i in local_neighbourhood))
-        #local_neighbourhood = list(list(i) for i in temp)
-        #print("Final number of generated neighbhours:",len(local_neighbourhood))
         return local_neighbourhood + local_neighbourhood
 
     #In Progress
