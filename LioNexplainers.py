@@ -2,14 +2,14 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 from sklearn.metrics import r2_score, mean_squared_error, accuracy_score
-from sklearn.linear_model import Ridge
+from sklearn.linear_model import RidgeCV,PassiveAggressiveRegressor
 from sklearn.metrics.pairwise import cosine_similarity
-
+from sklearn.preprocessing import StandardScaler
 
 class LioNexplainer:
     """Class for interpreting an instance"""
 
-    def __init__(self, explanator=Ridge(alpha=1,fit_intercept=True), instance=None, train_data=None, target_data=None, feature_names=None):
+    def __init__(self, explanator=RidgeCV(alphas=[0,1e-3, 1e-2, 1e-1, 1],fit_intercept=[True,False],cv=10), instance=None, train_data=None, target_data=None, feature_names=None):
         """Init function
         Args:
             explanator: The transparent model that is going to be used for the explanation. Default is Ridge Regression Algorithm
@@ -32,7 +32,8 @@ class LioNexplainer:
         """
         distances = []
         for i in self.train_data:
-            distances.append(cosine_similarity([self.instance.A[0]],[i])[0][0]*1000)
+            distances.append(cosine_similarity([i],[self.instance.A[0]])[0][0]*100)
+
         self.explanator.fit(self.train_data, self.target_data)
         y_pred = self.explanator.predict(self.train_data)
         self.accuracy_r2 = r2_score(self.target_data, y_pred)

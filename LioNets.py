@@ -69,7 +69,7 @@ class LioNet:
             elif gen2[i] > 0.2:
                 gen2[i] = gen2[i] * 2
             gen3 = instance.copy()  # Enhancing one feature
-            gen3[i] = gen3[i] * 10
+            gen3[i] = gen3[i] * 2
             gen4 = instance.copy()  # Removing one feature
             gen4[i] = 0
             gen5 = instance.copy()  # Enhancing low valued features a bit
@@ -88,21 +88,32 @@ class LioNet:
                 gen7[i - 1] = 0 + 0.05
             gen8 = instance.copy()  # Removing one feature
             gen8[i] = gen8[i]/2
+            gen9 = instance.copy()  # Removing one feature
+            gen9[i] = gen9[i] / 4
+            gen10 = instance.copy()  # Removing one feature
+            gen10[i] = gen10[i] *4
             #local_neighbourhood.append(list(gen1))
             #local_neighbourhood.append(list(gen2))
-            #local_neighbourhood.append(list(gen3))
+            local_neighbourhood.append(list(gen3))
+            local_neighbourhood.append(list(gen4))
             local_neighbourhood.append(list(gen4))
             #local_neighbourhood.append(list(gen5))
             #local_neighbourhood.append(list(gen6))
             #local_neighbourhood.append(list(gen7))
             local_neighbourhood.append(list(gen8))
+            local_neighbourhood.append(list(gen9))
+            local_neighbourhood.append(list(gen10))
             #if instance[i] > 0.5:
                 #local_neighbourhood.append(list(gen2))
                 #local_neighbourhood.append(list(gen5))
                 #local_neighbourhood.append(list(gen6))
                 #local_neighbourhood.append(list(gen7))
         local_neighbourhood.append(instance)
-        print(non_zero_indexes)
+        local_neighbourhood.append(instance)
+        local_neighbourhood.append(instance)
+        local_neighbourhood.append(instance)
+        local_neighbourhood.append(instance)
+        #print(non_zero_indexes)
         #if(len(non_zero_indexes)>3):
         #    for i in non_zero_indexes:
         #        other = non_zero_indexes.copy()
@@ -112,11 +123,11 @@ class LioNet:
         #            dg[i]=0
         #            dg[j]=0
                     #local_neighbourhood.append(dg)
-        print("Number of generated neighbhours:",len(local_neighbourhood))
-        temp = list(set(tuple(i) for i in local_neighbourhood))
-        local_neighbourhood = list(list(i) for i in temp)
-        print("Final number of generated neighbhours:",len(local_neighbourhood))
-        return local_neighbourhood
+        #print("Number of generated neighbhours:",len(local_neighbourhood))
+        #temp = list(set(tuple(i) for i in local_neighbourhood))
+        #local_neighbourhood = list(list(i) for i in temp)
+        #print("Final number of generated neighbhours:",len(local_neighbourhood))
+        return local_neighbourhood + local_neighbourhood
 
     #In Progress
     def neighbourhood_to_normal_distribution(self):
