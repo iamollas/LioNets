@@ -57,68 +57,15 @@ class LioNet:
             instance.append(encoded_instance[0][i])
         instance_length = len(instance)
         local_neighbourhood = []
-        non_zero_indexes = []
-        for i in range(0, instance_length):
-            if instance[i] > 0:
-                non_zero_indexes.append(i)
-            gen1 = [0] * instance_length
-            gen1[i] = instance[i]  # Only one feature
-            gen2 = instance.copy() # Removing low valued features and increasing high value
-            if gen2[i] < 0.2:
-                gen2[i] = 0
-            elif gen2[i] > 0.2:
-                gen2[i] = gen2[i] * 2
-            gen3 = instance.copy()  # Enhancing one feature
-            gen3[i] = gen3[i] * 2
-            gen4 = instance.copy()  # Removing one feature
-            gen4[i] = 0
-            gen5 = instance.copy()  # Enhancing low valued features a bit
-            if gen5[i] < 0.02:
-                gen5[i] = gen5[i] * 2
-            else:
-                gen5[i] = gen5[i]
-            gen6 = instance.copy()  # Enhancing low valued features a bit
-            gen7 = instance.copy()  # Enhancing low valued features a bit
-            if(i>1 and i<instance_length-1):
-                gen6[i]=0.1
-                gen6[i+1]=0
-                gen6[i-1]=0
-                gen7[i] = gen7[i] + 0.1
-                gen7[i + 1] = 0 + 0.05
-                gen7[i - 1] = 0 + 0.05
-            gen8 = instance.copy()  # Removing one feature
-            gen8[i] = gen8[i]/2
-            gen9 = instance.copy()  # Removing one feature
-            gen9[i] = gen9[i] / 4
-            gen10 = instance.copy()  # Removing one feature
-            gen10[i] = gen10[i] *4
-            #local_neighbourhood.append(list(gen1))
-            #local_neighbourhood.append(list(gen2))
-            local_neighbourhood.append(list(gen3))
-            local_neighbourhood.append(list(gen4))
-            local_neighbourhood.append(list(gen4))
-            #local_neighbourhood.append(list(gen5))
-            #local_neighbourhood.append(list(gen6))
-            #local_neighbourhood.append(list(gen7))
-            local_neighbourhood.append(list(gen8))
-            local_neighbourhood.append(list(gen9))
-            local_neighbourhood.append(list(gen10))
-        local_neighbourhood.append(instance)
-        local_neighbourhood.append(instance)
-        local_neighbourhood.append(instance)
-        local_neighbourhood.append(instance)
-        local_neighbourhood.append(instance)
-        #print(non_zero_indexes)
-        #if(len(non_zero_indexes)>3):
-        #    for i in non_zero_indexes:
-        #        other = non_zero_indexes.copy()
-        #        other.remove(i)
-        #        for j in other:
-        #            dg = instance.copy()
-        #            dg[i]=0
-        #            dg[j]=0
-                    #local_neighbourhood.append(dg)
-        return local_neighbourhood + local_neighbourhood
+        for i in range(0, instance_length): #Multiplying one feature value at a time with
+            for m in [0.25,0.5,0,1,2]: # 1/4, 1/2, 0, 1, 2
+                gen = instance.copy()
+                gen[i] = gen[i] * m
+                local_neighbourhood.append(list(gen))
+                del gen
+        for i in range(0,5):
+            local_neighbourhood.append(instance)
+        return local_neighbourhood + local_neighbourhood #We do this in order to have a bigger dataset. But there is no difference after all.
 
     #In Progress
     def neighbourhood_to_normal_distribution(self):

@@ -57,14 +57,12 @@ class Load_Dataset:
         text = str(text)
         text = re.sub(r" US ", " u s ", text)
         text = text.lower().split()
-        #text = [w for w in text if len(w) >= minLength]
         if stemming and stops:
             text = [word for word in text if word not in stopwords.words('english')]
             wordnet_lemmatizer = WordNetLemmatizer()
             englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
-            #text = [lancaster.stem(word) for word in text]
             text = [word for word in text if word not in stopwords.words('english')]
         elif stops:
             text = [word for word in text if word not in stopwords.words('english')]
@@ -121,7 +119,6 @@ class Load_Dataset:
             englishStemmer = SnowballStemmer("english", ignore_stopwords=False)
             text = [englishStemmer.stem(word) for word in text]
             text = [wordnet_lemmatizer.lemmatize(word) for word in text]
-            # text = [lancaster.stem(word) for word in text]
             text = [word for word in text if word not in stopwords.words('english')]
         elif stops:
             text = [word for word in text if word not in stopwords.words('english')]
