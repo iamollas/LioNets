@@ -1,5 +1,5 @@
 # LioNets 
-LioNets (Local Interpretations Of Neural nETworkS through autoencoder) 
+LioNets (Local Interpretations Of Neural Networks thourgh Penultimate Layer Decoding) 
 
 Building interpretable neural networks!
 
