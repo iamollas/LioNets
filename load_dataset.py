@@ -20,7 +20,7 @@ class Load_Dataset:
             class_names: ['noHateSpeech','HateSpeech']
         """
         missing_values = ["?"]
-        df = pd.read_csv("datasets/hatespeech.csv",na_values = missing_values,delimiter='\t')
+        df = pd.read_csv("datasets/hatespeech.csv", na_values=missing_values, delimiter='\t')
         X = df['comment'].values
         y = df['isHate'].values
         if preprocessed:
